@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorMessage = form.querySelector(".error-message");
     const sentMessage = form.querySelector(".sent-message");
 
-    // Reset message visibility
     loading.style.display = "block";
     errorMessage.style.display = "none";
     sentMessage.style.display = "none";
@@ -24,13 +23,17 @@ document.addEventListener("DOMContentLoaded", () => {
       loading.style.display = "none";
 
       if (response.ok) {
+        // ✅ Success — show thank-you message and ignore JSON response
         sentMessage.style.display = "block";
         form.reset();
-      } else {
-        const data = await response.json();
-        errorMessage.textContent = data.error || "Error sending message.";
-        errorMessage.style.display = "block";
+        return; // stop here, don’t parse JSON
       }
+
+      // ❌ Only handle actual errors
+      const data = await response.json();
+      errorMessage.textContent = data.error || "Error sending message.";
+      errorMessage.style.display = "block";
+
     } catch (error) {
       loading.style.display = "none";
       errorMessage.textContent = "Network error. Please try again.";
