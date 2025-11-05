@@ -23,17 +23,22 @@ document.addEventListener("DOMContentLoaded", () => {
       loading.style.display = "none";
 
       if (response.ok) {
-        // ✅ Success — show thank-you message and ignore JSON response
+        // ✅ Message sent successfully
         sentMessage.style.display = "block";
         form.reset();
-        return; // stop here, don’t parse JSON
+        return;
       }
 
-      // ❌ Only handle actual errors
-      const data = await response.json();
-      errorMessage.textContent = data.error || "Error sending message.";
-      errorMessage.style.display = "block";
+      // ❌ Handle real error only
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
+      errorMessage.textContent = data.error || "Something went wrong. Please try again.";
+      errorMessage.style.display = "block";
     } catch (error) {
       loading.style.display = "none";
       errorMessage.textContent = "Network error. Please try again.";
